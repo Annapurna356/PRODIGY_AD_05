@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Code Scanner</title>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #ffffff;
+      text-align: center;
+      padding: 20px;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+    }
+
+    #reader {
+      width: 100%;
+      max-width: 360px;
+      margin: 0 auto;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 1rem;
+      background: #1e293b;
+      padding: 12px;
+      border-radius: 8px;
+      word-break: break-word;
+    }
+
+    a {
+      color: #38bdf8;
+      word-wrap: break-word;
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      #result {
+        font-size: 0.95rem;
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📷 QR Code Scanner</h1>
+  <div id="reader"></div>
+  <div id="result">Scanned result will appear here</div>
+
+  <script>
+    const resultContainer = document.getElementById('result');
+
+    function isValidURL(str) {
+      try {
+        new URL(str);
+        return true;
+      } catch (_) {
+        return false;
+      }
+    }
+
+    function handleScanSuccess(decodedText, decodedResult) {
+      html5QrcodeScanner.clear().then(() => {
+        if (isValidURL(decodedText)) {
+          resultContainer.innerHTML = `Scanned Link: <a href="${decodedText}" target="_blank">${decodedText}</a>`;
+        } else {
+          resultContainer.textContent = `Scanned Content: ${decodedText}`;
+        }
+      }).catch(err => console.error(err));
+    }
+
+    const html5QrcodeScanner = new Html5QrcodeScanner("reader", {
+      fps: 10,
+      qrbox: {
+        width: 250,
+        height: 250
+      }
+    });
+
+    html5QrcodeScanner.render(handleScanSuccess);
+  </script>
+
+</body>
+</html>
